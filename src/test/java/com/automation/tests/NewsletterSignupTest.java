@@ -39,8 +39,9 @@ public class NewsletterSignupTest {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--start-maximized");
         options.addArguments("--disable-notifications");
-        // Uncomment for headless mode (no visible browser)
-        // options.addArguments("--headless");
+        options.addArguments("--headless");  // Enable headless for CI
+        options.addArguments("--no-sandbox");  // Required for CI environments
+        options.addArguments("--disable-dev-shm-usage");  // Prevent crashes in CI
 
         // Initialize WebDriver
         driver = new ChromeDriver(options);
