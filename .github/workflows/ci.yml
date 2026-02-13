@@ -1,0 +1,106 @@
+name: Selenium Test Automation CI
+
+# Trigger the workflow on push or pull request to main branch
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:  # Allows manual trigger from GitHub UI
+
+jobs:
+  test:
+    name: Run Selenium Tests
+    runs-on: ubuntu-latest  # Use Ubuntu virtual machine
+
+    steps:
+      # Step 1: Checkout the code from the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Java 11
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: maven
+
+      # Step 3: Install Chrome browser (for Selenium)
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
+
+      # Step 4: Verify Chrome installation
+      - name: Verify Chrome installation
+        run: |
+          echo "Chrome version:"
+          google-chrome --version
+
+      # Step 5: Cache Maven dependencies for faster builds
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      # Step 6: Run Maven tests
+      - name: Run tests with Maven
+        run: mvn clean test
+        env:
+          # Run Chrome in headless mode for CI
+          HEADLESS: true
+
+      # Step 7: Upload test results (even if tests fail)
+      - name: Upload test results
+        if: always()  # Run this step even if previous steps fail
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: target/surefire-reports/
+          retention-days: 30
+
+      # Step 8: Generate test report summary
+      - name: Publish Test Report
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: Maven Test Results
+          path: target/surefire-reports/*.xml
+          reporter: java-junit
+          fail-on-error: true
+
+  # Notification job - runs after tests complete
+  notify:
+    name: Send Notifications
+    needs: test
+    runs-on: ubuntu-latest
+    if: always()  # Run even if tests fail
+
+    steps:
+      # Slack notification (optional - requires SLACK_WEBHOOK_URL secret)
+      - name: Slack Notification
+        if: env.SLACK_WEBHOOK_URL != ''
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ needs.test.result }}
+          text: |
+            Selenium Test Run: ${{ needs.test.result }}
+            Repository: ${{ github.repository }}
+            Branch: ${{ github.ref_name }}
+            Commit: ${{ github.sha }}
+          webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      # Email notification via GitHub (always enabled)
+      - name: Test Status Summary
+        run: |
+          echo "Test execution completed with status: ${{ needs.test.result }}"
+          if [ "${{ needs.test.result }}" == "success" ]; then
+            echo "✅ All tests passed successfully!"
+          else
+            echo "❌ Tests failed. Check the logs above for details."
+          fi
