@@ -8,6 +8,13 @@ on:
     branches: [ main ]
   workflow_dispatch:  # Allows manual trigger from GitHub UI
 
+# Add permissions for the workflow
+permissions:
+  contents: read          # Read repository contents
+  checks: write           # Write check runs (for test reports)
+  pull-requests: write    # Comment on PRs
+  actions: read           # Read workflow info
+
 jobs:
   test:
     name: Run Selenium Tests
