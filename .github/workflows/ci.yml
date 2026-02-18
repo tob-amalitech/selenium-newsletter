@@ -102,7 +102,44 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-      # Email notification via GitHub (always enabled)
+      # Step 9: Set email subject and status emoji
+      - name: Prepare email content
+        id: email_content
+        run: |
+          if [ "${{ needs.test.result }}" == "success" ]; then
+            echo "status_emoji=✅" >> $GITHUB_OUTPUT
+            echo "status_label=PASSED" >> $GITHUB_OUTPUT
+          else
+            echo "status_emoji=❌" >> $GITHUB_OUTPUT
+            echo "status_label=FAILED" >> $GITHUB_OUTPUT
+          fi
+
+      # Step 10: Send email notification
+      - name: Send email notification
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          to: ${{ secrets.MAIL_RECIPIENT }}
+          from: Selenium CI Bot <${{ secrets.MAIL_USERNAME }}>
+          subject: "${{ steps.email_content.outputs.status_emoji }} Selenium Tests ${{ steps.email_content.outputs.status_label }} - ${{ github.repository }} (${{ github.ref_name }})"
+          body: |
+            Selenium Test Automation CI — Run Complete
+
+            Status:     ${{ steps.email_content.outputs.status_emoji }} ${{ steps.email_content.outputs.status_label }}
+            Repository: ${{ github.repository }}
+            Branch:     ${{ github.ref_name }}
+            Commit:     ${{ github.sha }}
+            Triggered:  ${{ github.event_name }}
+            Actor:      ${{ github.actor }}
+
+            View full run and test report:
+            https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+      # Test Status Summary (kept for logs)
       - name: Test Status Summary
         run: |
           echo "Test execution completed with status: ${{ needs.test.result }}"
