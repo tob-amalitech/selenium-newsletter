@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Tests the newsletter signup form functionality
  */
 public class NewsletterSignupTest {
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(NewsletterSignupTest.class.getName());
 
     private WebDriver driver;
     private NewsletterPage newsletterPage;
@@ -32,7 +33,7 @@ public class NewsletterSignupTest {
      */
     @BeforeEach
     public void setUp() {
-        // Setup ChromeDriver using WebDriverManager
+        logger.info("Setting up WebDriver and test environment");
         WebDriverManager.chromedriver().setup();
 
         // Configure Chrome options
@@ -56,6 +57,7 @@ public class NewsletterSignupTest {
      */
     @AfterEach
     public void tearDown() {
+        logger.info("Tearing down WebDriver and cleaning up");
         if (driver != null) {
             driver.quit();
         }
@@ -67,15 +69,13 @@ public class NewsletterSignupTest {
     @Test
     @DisplayName("Should load newsletter page successfully")
     public void testPageLoads() {
-        // Navigate to newsletter page
+        logger.info("Starting test: testPageLoads");
         newsletterPage.navigateTo(NEWSLETTER_URL);
+        logger.info("Navigated to newsletter page: " + NEWSLETTER_URL);
 
-        // Verify page title
         String pageTitle = newsletterPage.getPageTitle();
         assertNotNull(pageTitle, "Page title should not be null");
-
-        System.out.println("✅ Newsletter page loaded successfully");
-        System.out.println("Page title: " + pageTitle);
+        logger.info("Page title: " + pageTitle);
     }
 
     /**
@@ -84,37 +84,32 @@ public class NewsletterSignupTest {
     @Test
     @DisplayName("Should subscribe successfully with valid email")
     public void testSuccessfulSubscription() {
-        // Navigate to newsletter page
+        logger.info("Starting test: testSuccessfulSubscription");
         newsletterPage.navigateTo(NEWSLETTER_URL);
+        logger.info("Navigated to newsletter page: " + NEWSLETTER_URL);
 
-        // Subscribe with valid email
         String testEmail = "test@company.com";
+        logger.info("Subscribing with email: " + testEmail);
         newsletterPage.subscribeWithEmail(testEmail);
 
-        // Wait a moment for success message to appear
         try {
-            Thread.sleep(1000); // Give JavaScript time to process
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.warning("Interrupted while waiting for success message: " + e.getMessage());
         }
 
-        // Verify success message is displayed
         assertTrue(newsletterPage.isSuccessMessageDisplayed(),
-                "Success message should be displayed after valid subscription");
+            "Success message should be displayed after valid subscription");
 
-        // Verify success message text
         String successHeading = newsletterPage.getSuccessMessageHeading();
         assertEquals("Thanks for subscribing!", successHeading,
-                "Success message heading should match");
+            "Success message heading should match");
 
-        // Verify email is shown in success message
         String confirmedEmail = newsletterPage.getConfirmedEmail();
         assertEquals(testEmail, confirmedEmail,
-                "Confirmed email should match the entered email");
+            "Confirmed email should match the entered email");
 
-        System.out.println("✅ Subscription successful!");
-        System.out.println("Success message: " + successHeading);
-        System.out.println("Confirmed email: " + confirmedEmail);
+        logger.info("Subscription successful! Success message: " + successHeading + ", Confirmed email: " + confirmedEmail);
     }
 
     /**
@@ -124,17 +119,17 @@ public class NewsletterSignupTest {
     @Test
     @DisplayName("Should show error for invalid email")
     public void testInvalidEmailValidation() {
-        // Navigate to newsletter page
+        logger.info("Starting test: testInvalidEmailValidation");
         newsletterPage.navigateTo(NEWSLETTER_URL);
+        logger.info("Navigated to newsletter page: " + NEWSLETTER_URL);
 
-        // Try to subscribe with invalid email
+        logger.info("Attempting to subscribe with invalid email");
         newsletterPage.subscribeWithEmail("invalid-email");
 
-        // Wait a moment for validation
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.warning("Interrupted while waiting for validation: " + e.getMessage());
         }
 
         // Verify invalid email message is displayed

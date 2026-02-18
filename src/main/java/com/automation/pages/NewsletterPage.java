@@ -9,6 +9,7 @@ import org.openqa.selenium.support.FindBy;
  * Contains all elements and actions for the newsletter page
  */
 public class NewsletterPage extends BasePage {
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(NewsletterPage.class.getName());
 
     // Page Elements using @FindBy annotations (Page Factory pattern)
 
@@ -46,6 +47,7 @@ public class NewsletterPage extends BasePage {
      * @param url URL of the newsletter form
      */
     public void navigateTo(String url) {
+        logger.info("Navigating to URL: " + url);
         driver.get(url);
     }
 
@@ -54,6 +56,7 @@ public class NewsletterPage extends BasePage {
      * @param email Email address to enter
      */
     public void enterEmail(String email) {
+        logger.fine("Entering email: " + email);
         enterText(emailInput, email);
     }
 
@@ -61,6 +64,7 @@ public class NewsletterPage extends BasePage {
      * Click the subscribe button
      */
     public void clickSubscribe() {
+        logger.fine("Clicking subscribe button");
         clickElement(submitButton);
     }
 
@@ -69,6 +73,7 @@ public class NewsletterPage extends BasePage {
      * @param email Email address to subscribe with
      */
     public void subscribeWithEmail(String email) {
+        logger.info("Subscribing with email: " + email);
         enterEmail(email);
         clickSubscribe();
     }

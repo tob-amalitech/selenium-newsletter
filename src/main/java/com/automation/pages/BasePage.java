@@ -13,6 +13,7 @@ import java.time.Duration;
  * This follows the Page Object Model (POM) design pattern
  */
 public class BasePage {
+    protected static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(BasePage.class.getName());
 
     protected WebDriver driver;
     protected WebDriverWait wait;
@@ -62,6 +63,7 @@ public class BasePage {
      * @param text Text to enter
      */
     protected void enterText(WebElement element, String text) {
+        logger.fine("Entering text: '" + text + "' into element: " + element);
         waitForElementToBeVisible(element);
         element.clear();
         element.sendKeys(text);
@@ -72,6 +74,7 @@ public class BasePage {
      * @param element WebElement to click
      */
     protected void clickElement(WebElement element) {
+        logger.fine("Clicking element: " + element);
         waitForElementToBeClickable(element);
         element.click();
     }
@@ -83,6 +86,8 @@ public class BasePage {
      */
     protected String getElementText(WebElement element) {
         waitForElementToBeVisible(element);
-        return element.getText();
+        String text = element.getText();
+        logger.fine("Got text from element: " + element + " -> '" + text + "'");
+        return text;
     }
 }
