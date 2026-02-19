@@ -98,7 +98,7 @@ public class NewsletterSignupTest {
             "Success message should be displayed after valid subscription");
 
         String successHeading = newsletterPage.getSuccessMessageHeading();
-        assertEquals("Thanks for subscribing!", successHeading,
+        assertEquals("Wrong message", successHeading,
             "Success message heading should match");
 
         String confirmedEmail = newsletterPage.getConfirmedEmail();
