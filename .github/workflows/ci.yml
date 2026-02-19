@@ -19,6 +19,7 @@ jobs:
   test:
     name: Run Selenium Tests
     runs-on: ubuntu-latest  # Use Ubuntu virtual machine
+    timeout-minutes: 30     # Set a timeout for the job
 
     steps:
       # Step 1: Checkout the code from the repository

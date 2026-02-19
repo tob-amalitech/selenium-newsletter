@@ -21,11 +21,7 @@ public class NewsletterSignupTest {
     private WebDriver driver;
     private NewsletterPage newsletterPage;
 
-    // TODO: Update this URL to match where your newsletter form is hosted
-    // Examples:
-    // - Local file: "file:///C:/Users/YourName/projects/newsletter/index.html"
-    // - Local server: "http://localhost:8080/index.html"
-    // - Online: "https://yoursite.com/newsletter.html"
+
     private static final String NEWSLETTER_URL = "https://webdevfundamentals.vercel.app/";
 
     /**
@@ -88,7 +84,7 @@ public class NewsletterSignupTest {
         newsletterPage.navigateTo(NEWSLETTER_URL);
         logger.info("Navigated to newsletter page: " + NEWSLETTER_URL);
 
-        String testEmail = "test@company.com";
+        String testEmail = "test@car.com";
         logger.info("Subscribing with email: " + testEmail);
         newsletterPage.subscribeWithEmail(testEmail);
 
@@ -201,8 +197,7 @@ public class NewsletterSignupTest {
             e.printStackTrace();
         }
 
-        // Note: Depending on your JavaScript, the message might be hidden or removed
-        // You may need to adjust this assertion based on your implementation
+
         System.out.println("✅ Dismiss button clicked");
     }
 }
