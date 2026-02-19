@@ -36,7 +36,7 @@ public class NewsletterSignupTest {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--start-maximized");
         options.addArguments("--disable-notifications");
-//        options.addArguments("--headless");  // Enable headless for CI
+        options.addArguments("--headless");  // Enable headless for CI
         options.addArguments("--no-sandbox");  // Required for CI environments
         options.addArguments("--disable-dev-shm-usage");  // Prevent crashes in CI
 
