@@ -1,13 +1,8 @@
 package com.automation.tests;
 
 import com.automation.pages.NewsletterPage;
-import io.github.bonigarcia.wdm.WebDriverManager;
+import com.automation.setup.BaseTest;
 import org.junit.jupiter.api.*;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-
-import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,10 +10,9 @@ import static org.junit.jupiter.api.Assertions.*;
  * Newsletter Signup Test using Page Object Model
  * Tests the newsletter signup form functionality
  */
-public class NewsletterSignupTest {
+public class NewsletterSignupTest extends BaseTest {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(NewsletterSignupTest.class.getName());
 
-    private WebDriver driver;
     private NewsletterPage newsletterPage;
 
 
@@ -28,35 +22,9 @@ public class NewsletterSignupTest {
      * Setup method - runs BEFORE EACH test
      */
     @BeforeEach
-    public void setUp() {
-        logger.info("Setting up WebDriver and test environment");
-        WebDriverManager.chromedriver().setup();
-
-        // Configure Chrome options
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--start-maximized");
-        options.addArguments("--disable-notifications");
-        options.addArguments("--headless");  // Enable headless for CI
-        options.addArguments("--no-sandbox");  // Required for CI environments
-        options.addArguments("--disable-dev-shm-usage");  // Prevent crashes in CI
-
-        // Initialize WebDriver
-        driver = new ChromeDriver(options);
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-
+    public void setUpPage() {
         // Initialize Page Object
         newsletterPage = new NewsletterPage(driver);
-    }
-
-    /**
-     * Teardown method - runs AFTER EACH test
-     */
-    @AfterEach
-    public void tearDown() {
-        logger.info("Tearing down WebDriver and cleaning up");
-        if (driver != null) {
-            driver.quit();
-        }
     }
 
     /**
