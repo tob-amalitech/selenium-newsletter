@@ -2,7 +2,7 @@
 
 ## Description
 
-This project contains automated tests for newsletter signup functionality using Selenium WebDriver and JUnit 5. It demonstrates best practices for test automation with the Page Object Model pattern.
+This project contains automated tests for newsletter signup functionality using Selenium WebDriver and JUnit 5. It demonstrates best practices for test automation with the Page Object Model pattern
 
 ## Prerequisites
 
